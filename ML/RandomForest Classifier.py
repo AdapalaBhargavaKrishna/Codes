@@ -3,6 +3,7 @@ from sklearn.datasets import make_classification
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn import tree
+from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -37,20 +38,16 @@ accuracy=accuracy_score(y_test, y_pred)
 print("Accuracy: %.2f" % accuracy)
 
 # --- Step 6: Test the model on a new sample ---
-# Create a new sample (10 features → same as training data)
 new_sample = np.array([[0.5, -1.2, 0.3, 2.1, -0.9, 0.8, 1.0, -0.5, 0.2, -1.0]])
 
-# Predict the class of the new sample
 predicted_class = clf.predict(new_sample)
 predicted_prob = clf.predict_proba(new_sample)
 
-# Display the results
 print("\nNew Sample:", new_sample)
 print("Predicted Class:", predicted_class[0])
 print("Predicted Probabilities:", predicted_prob[0])
 
 # --- Display predictions from each individual decision tree ---
-# Get predictions from each tree in the Random Forest
 tree_predictions = [estimator.predict(new_sample)[0] for estimator in clf.estimators_]
 
 # Display all tree predictions
@@ -58,11 +55,10 @@ print("\nPredictions from each of the 100 Decision Trees:")
 print(tree_predictions)
 
 # count how many trees voted for each class
-from collections import Counter
 print("\nVote counts from trees:", Counter(tree_predictions))
 
 # --- Step 5: Visualize individual decision trees ---
-for i in range(5):   #len(clf.estimators_)):
+for i in range(5):
     plt.figure(figsize=(12, 8))
     tree.plot_tree(
         clf.estimators_[i],

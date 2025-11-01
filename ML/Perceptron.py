@@ -1,6 +1,5 @@
 import numpy as np
 
-# Step activation function
 def step_function(x):
     return np.where(x >= 0, 1, 0)
 
@@ -10,7 +9,7 @@ def perceptron_train(X, y, learning_rate=0.1, epochs=10):
     weights = np.zeros(n_features)
     bias = 0
     print(f"Initial Weights:\n Weights: {weights}, Bias: {bias}")
-    print("\n")
+
     for epoch in range(epochs):
         for i in range(n_samples):
             linear_output = np.dot(X[i], weights) + bias

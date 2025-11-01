@@ -1,4 +1,3 @@
-# --- Step 1: Import necessary libraries ---
 import numpy as np
 from sklearn.datasets import make_regression
 from sklearn.ensemble import RandomForestRegressor
@@ -8,22 +7,15 @@ from sklearn.tree import export_text, plot_tree
 import matplotlib.pyplot as plt
 
 # --- Step 2: Generate synthetic regression data ---
-# 1000 samples, 10 features, and some noise
 X, y = make_regression(n_samples=1000, n_features=10, noise=0.2, random_state=42)
 
-# --- Step 3: Split the data into training and testing sets ---
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# --- Step 4: Create and train the Random Forest Regressor ---
 regressor = RandomForestRegressor(n_estimators=100,random_state=42)
 print("No of decision trees in the forest:",regressor.n_estimators)
 print("Criterion for decision tree:\n",regressor.criterion)
 
-
-
 regressor.fit(X_train, y_train)
-
-# --- Step 5: Evaluate the model on test data ---
 y_pred = regressor.predict(X_test)
 
 mse = mean_squared_error(y_test, y_pred)
@@ -33,7 +25,6 @@ print("Mean Squared Error:", round(mse, 2))
 print("R² Score:", round(r2, 3))
 
 # --- Step 6: Test the model on a new sample ---
-# Create a new sample (10 features → same as training data)
 new_sample = np.array([[0.5, -1.2, 0.3, 2.1, -0.9, 0.8, 1.0, -0.5, 0.2, -1.0]])
 
 predicted_value = regressor.predict(new_sample)
@@ -57,8 +48,7 @@ for i in range(5):
         feature_names=[f"X{i}" for i in range(X.shape[1])],
         filled=True,
         fontsize=8,
-        max_depth=5  # limit depth for readability
+        max_depth=5
     )
     plt.title(f"Decision Tree #{i+1}")
     plt.show()
-

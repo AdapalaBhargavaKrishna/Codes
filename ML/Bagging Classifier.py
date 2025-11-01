@@ -31,28 +31,19 @@ print("Bagging Classifier Accuracy:", round(accuracy, 2))
 
 # --- Step 8: Test with a new sample ---
 # Example: new flower measurements [sepal_length, sepal_width, petal_length, petal_width]
-new_sample = [[5.1, 3.5, 1.4, 0.2]]  # This looks like Iris-setosa
+new_sample = [[5.1, 3.5, 1.4, 0.2]]
 predicted_class = bagging_model.predict(new_sample)[0]
 
-# Display class name instead of numeric label
 class_name = data.target_names[predicted_class]
 print("Predicted class for new sample:", class_name)
 
-# --- Step 8: Test with a new sample ---
-new_sample = [[5.1, 3.5, 1.4, 0.2]]  # Example input (likely 'setosa')
-
 print("\n--- Individual Base Learner Predictions ---")
-#individual_preds = []
-
-# Loop through each trained base estimator in the ensemble
 for i, estimator in enumerate(bagging_model.estimators_):
     pred = estimator.predict(new_sample)[0]
     class_name = data.target_names[pred]
-    #individual_preds.append(class_name)
     print(f"Model {i+1} predicts: {class_name}")
 
-# --- Step 9: Final ensemble prediction ---
 final_pred = bagging_model.predict(new_sample)[0]
 final_class = data.target_names[final_pred]
 
-print("\nFinal (majority-voted) prediction:", final_class)
+print("\nFinal (majority-voted) prediction:", final_class) 
