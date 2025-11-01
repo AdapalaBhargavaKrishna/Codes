@@ -3,7 +3,6 @@ from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from matplotlib import pyplot as plt
-from keras.layers import Dropout
 import numpy as np
 import pandas as pd
 
