@@ -8,12 +8,9 @@ data = load_iris()
 X = data.data
 y = data.target
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 base_learner = DecisionTreeClassifier(max_depth=3)
-
 bagging_model = BaggingClassifier(
     estimator=base_learner,  # Base learner
     n_estimators=50,         # Number of base learners (trees)
@@ -21,12 +18,9 @@ bagging_model = BaggingClassifier(
     bootstrap=True,          # Sampling with replacement
     random_state=42
 )
-
 bagging_model.fit(X_train, y_train)
-
 y_pred = bagging_model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-
 print("Bagging Classifier Accuracy:", round(accuracy, 2))
 
 # --- Step 8: Test with a new sample ---

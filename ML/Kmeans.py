@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDis
 from scipy.stats import mode
 
 iris = load_iris()
-X = iris.data   
+X = iris.data
 y_true = iris.target
 
 plt.scatter(X[:,0], X[:,1], s=50)
@@ -18,7 +18,6 @@ plt.show()
 kmeans = KMeans(n_clusters=3, init='k-means++',random_state=42)
 kmeans.fit(X)
 y_kmeans = kmeans.labels_
-
 print("Model predicted Cluster Labels:\n",y_kmeans)
 
 labels = np.zeros_like(y_kmeans)
@@ -31,7 +30,6 @@ print("Original labels:\n", y_true)
 
 cm = confusion_matrix(y_true, labels)
 accuracy = accuracy_score(y_true, labels)
-
 print("Confusion Matrix:\n", cm)
 print("\nAccuracy:", accuracy)
 

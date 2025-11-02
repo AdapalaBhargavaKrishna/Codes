@@ -22,12 +22,10 @@ model = Sequential([
     Dense(16, activation='relu'),
     Dense(1, activation='sigmoid')
 ])
-
 model.summary()
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 history = model.fit(X_train, y_train, epochs=100, batch_size=32, verbose=1)
-
 score = model.evaluate(X_test, y_test)
 print(f"\nTest Accuracy: {score[1]*100:.2f}%")
 

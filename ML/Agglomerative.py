@@ -1,10 +1,8 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDisplay
-from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.stats import mode
 
 iris = load_iris()
@@ -23,8 +21,6 @@ for i in range(3):
 
 acc = accuracy_score(y_true, labels)
 print(f"\nAgglomerative Clustering Accuracy: {acc:.4f}")
-
-
 cm = confusion_matrix(y_true, labels)
 print("\nConfusion Matrix:", cm)
 

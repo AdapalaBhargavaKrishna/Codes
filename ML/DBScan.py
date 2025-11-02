@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.cluster import DBSCAN
@@ -35,7 +34,7 @@ print("\nConfusion Matrix:", cm)
 ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=iris.target_names).plot(cmap='Blues')
 plt.title("Confusion Matrix - DBSCAN Clustering")
 plt.show()
-plt.figure(figsize=(6, 5))
+
 plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=y_pred, cmap='viridis', s=50)
 plt.title("DBSCAN Clustering Results")
 plt.xlabel("Feature 1 (Standardized)")

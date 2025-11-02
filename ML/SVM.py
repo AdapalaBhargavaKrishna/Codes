@@ -17,8 +17,8 @@ X_test = scaler.transform(X_test)
 
 svm = SVC(kernel='linear', random_state=42)
 svm.fit(X_train, y_train)
-
 y_pred = svm.predict(X_test)
+
 print("Accuracy:", accuracy_score(y_test, y_pred))
 
 ConfusionMatrixDisplay.from_predictions(y_test, y_pred, display_labels=iris.target_names, cmap='Blues')
@@ -29,7 +29,6 @@ plt.show()
 X_2D, y_2D = X[:, :2], y
 scaler_2D = StandardScaler()
 X_2D_scaled = scaler_2D.fit_transform(X_2D)
-
 svm.fit(X_2D_scaled, y_2D)
 
 x_min, x_max = X_2D_scaled[:, 0].min()-1, X_2D_scaled[:, 0].max()+1

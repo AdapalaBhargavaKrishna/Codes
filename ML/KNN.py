@@ -4,8 +4,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
 
 iris = load_iris()
 X = iris.data      # Features
@@ -21,6 +20,7 @@ X_test = scaler.transform(X_test)
 
 knn = KNeighborsClassifier(n_neighbors=3,metric='manhattan')
 knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
 
 unique, counts = np.unique(y_test, return_counts=True)
 
@@ -28,15 +28,11 @@ print("Number of flowers in each category in Test Data:")
 for cls, count in zip(unique, counts):
     print(f"{iris.target_names[cls]}: {count}")
 
-y_pred = knn.predict(X_test)
 cm = confusion_matrix(y_test, y_pred)
-
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Confusion Matrix:\n",cm)
 
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=iris.target_names)
-
-# Plot confusion matrix
 disp.plot(cmap="Blues")
 plt.title("Confusion Matrix - KNN")
 plt.show()

@@ -3,7 +3,7 @@ from sklearn.datasets import make_regression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.tree import export_text, plot_tree
+from sklearn.tree import plot_tree
 import matplotlib.pyplot as plt
 
 # --- Step 2: Generate synthetic regression data ---
@@ -20,13 +20,11 @@ y_pred = regressor.predict(X_test)
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
-
 print("Mean Squared Error:", round(mse, 2))
 print("R² Score:", round(r2, 3))
 
 # --- Step 6: Test the model on a new sample ---
 new_sample = np.array([[0.5, -1.2, 0.3, 2.1, -0.9, 0.8, 1.0, -0.5, 0.2, -1.0]])
-
 predicted_value = regressor.predict(new_sample)
 
 print("\nNew Sample:", new_sample)
@@ -42,7 +40,6 @@ print("\nAverage of all tree predictions:", np.mean(tree_predictions))
 
 # --- Step 9 (Optional): Plot 5 Decision Trees visually ---
 for i in range(5):
-    plt.figure(figsize=(10, 6))
     plot_tree(
         regressor.estimators_[i],
         feature_names=[f"X{i}" for i in range(X.shape[1])],
