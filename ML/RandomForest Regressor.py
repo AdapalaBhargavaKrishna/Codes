@@ -49,3 +49,4 @@ for i in range(5):
     )
     plt.title(f"Decision Tree #{i+1}")
     plt.show()
+    

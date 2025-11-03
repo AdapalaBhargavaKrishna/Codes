@@ -1,3 +1,9 @@
+# 1. **Choose K** → number of nearest neighbors to consider.
+# 2. **Calculate distance** → find how close each training point is (usually Euclidean).
+# 3. **Pick K nearest points** → select the K closest data points.
+# 4. **For classification:** take the **majority vote** among K neighbors.
+# 5. **For regression:** take the **average** of their values.
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris

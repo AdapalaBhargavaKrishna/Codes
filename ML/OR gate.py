@@ -11,3 +11,4 @@ print("OR Function using McCulloch-Pitts Neuron")
 for x1, x2 in inputs:
     output = mcCullochPitts_OR(x1, x2)
     print(f"Input: ({x1}, {x2}) -> Output: {output}")
+    

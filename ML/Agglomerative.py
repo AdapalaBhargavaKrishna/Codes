@@ -1,3 +1,5 @@
+# This program applies Agglomerative Hierarchical Clustering (a bottom-up hierarchical clustering method) on the Iris dataset to form 3 clusters corresponding to the three flower species — Setosa, Versicolor, and Virginica.
+# Then, it compares the predicted clusters with actual labels to measure accuracy and visualize the confusion matrix and cluster plot.
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
@@ -9,6 +11,7 @@ iris = load_iris()
 X = iris.data
 y_true = iris.target
 
+# Creates an Agglomerative Clustering model with 3 clusters. linkage='ward' specifies Ward's method, which minimizes the within-cluster variance when merging clusters (tends to create compact, spherical clusters).
 agg = AgglomerativeClustering(n_clusters=3, linkage='ward')
 y_pred = agg.fit_predict(X)
 
