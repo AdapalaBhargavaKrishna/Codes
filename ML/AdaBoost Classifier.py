@@ -1,3 +1,6 @@
+# AdaBoost is an ensemble learning method that combines multiple weak learners (usually simple models like decision stumps — one-level decision trees) to create a strong classifier.
+# Each weak learner performs only slightly better than random guessing, but when combined, they form a powerful and accurate model.
+
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import make_classification
@@ -5,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
 
+# 1000 samples, 10 features (5 are informative, rest are noise)
 X, y = make_classification(n_samples=1000, n_features=10, n_informative=5, random_state=0)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -13,11 +17,11 @@ print(f"Train samples: {X_train.shape}, Test samples: {X_test.shape}")
 model = AdaBoostClassifier(
     estimator=DecisionTreeClassifier(max_depth=2),
     n_estimators=100, 
-    learning_rate=0.3, 
+    learning_rate=0.3,  #controls how much each learner contributes 
     random_state=42
 ).fit(X_train, y_train)
-
 y_pred = model.predict(X_test)
+
 print(f"\nFinal Accuracy: {accuracy_score(y_test, y_pred):.2f}")
 print("First 10 Predictions:", y_pred[:10])
 

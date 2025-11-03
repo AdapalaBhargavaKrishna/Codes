@@ -1,3 +1,6 @@
+# This program demonstrates AdaBoost Regression an ensemble learning technique that combines multiple weak learners (here, Decision Trees) to create a strong predictive model for regression tasks.
+# It uses synthetic data (random regression dataset), trains an AdaBoost Regressor, evaluates its performance using Mean Squared Error (MSE) and R² Score, and prints the weights and errors of each weak learner.
+
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
@@ -11,7 +14,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 base_learner = DecisionTreeRegressor(max_depth=3)
 model = AdaBoostRegressor(
     estimator=base_learner,   # base model (weak learner)
-    n_estimators=50,          # number of boosting rounds
+    n_estimators=50,          # number of weak learners
     learning_rate=0.8,        # step size to control weight updates
     random_state=42
 )

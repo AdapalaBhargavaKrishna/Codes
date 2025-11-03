@@ -1,3 +1,6 @@
+# Bagging (Bootstrap Aggregating) is an ensemble learning technique that combines predictions from multiple models (usually the same type, like decision trees) trained on different random subsets of the dataset.
+# Each model is trained on a bootstrap sample (random samples with replacement), and the final prediction is made by majority voting (for classification) or averaging (for regression).
+
 from sklearn.ensemble import BaggingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import load_iris

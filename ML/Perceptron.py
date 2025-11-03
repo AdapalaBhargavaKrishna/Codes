@@ -1,3 +1,5 @@
+# A Perceptron is the simplest kind of neural network — a single neuron model.
+# It tries to find a linear decision boundary between two classes (like Placed vs Not Placed).
 import numpy as np
 
 def step_function(x):
@@ -19,7 +21,7 @@ def perceptron_train(X, y, learning_rate=0.1, epochs=10):
             update = learning_rate * (y[i] - y_pred)
             weights += update * X[i]
             bias += update
-
+    
         print(f"Epoch {epoch+1} completed:\n Weights: {weights}, Bias: {bias}")
 
     return weights, bias
@@ -29,11 +31,10 @@ def perceptron_predict(X, weights, bias):
     linear_output = np.dot(X, weights) + bias
     return step_function(linear_output)
 
-# -------------------------
 # Example Dataset
 # Features: [CGPA, Communication Skill (0-10)]
 # Label: 1 = Placed, 0 = Not Placed
-# -------------------------
+
 X = np.array([
     [8.5, 7],
     [7.0, 6],
@@ -47,6 +48,8 @@ y = np.array([1, 0, 0, 1, 0, 1])  # placement labels
 
 # Train perceptron
 weights, bias = perceptron_train(X, y, learning_rate=0.1, epochs=10)
+# learning_rate: how fast the model learns
+# epochs: how many times we train through the dataset
 
 # Test new student
 new_student = np.array([[7.5, 8]])

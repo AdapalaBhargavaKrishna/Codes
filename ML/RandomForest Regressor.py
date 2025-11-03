@@ -1,3 +1,10 @@
+# Random Forest Regressor is an ensemble learning algorithm used for regression tasks (predicting continuous values).
+# It builds multiple Decision Trees, each trained on a random subset of the data and features.
+# Each tree predicts a numerical value.
+# The average of all tree predictions is taken as the final output.
+# Reduces overfitting
+# Improves prediction accuracy and stability
+
 import numpy as np
 from sklearn.datasets import make_regression
 from sklearn.ensemble import RandomForestRegressor
@@ -6,7 +13,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.tree import plot_tree
 import matplotlib.pyplot as plt
 
-# --- Step 2: Generate synthetic regression data ---
 X, y = make_regression(n_samples=1000, n_features=10, noise=0.2, random_state=42)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -26,7 +32,6 @@ print("R² Score:", round(r2, 3))
 # --- Step 6: Test the model on a new sample ---
 new_sample = np.array([[0.5, -1.2, 0.3, 2.1, -0.9, 0.8, 1.0, -0.5, 0.2, -1.0]])
 predicted_value = regressor.predict(new_sample)
-
 print("\nNew Sample:", new_sample)
 print("Predicted Target Value:", predicted_value[0])
 

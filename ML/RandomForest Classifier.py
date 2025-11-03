@@ -1,3 +1,10 @@
+# Random Forest is an ensemble learning algorithm that builds multiple Decision Trees and combines their results to improve accuracy and stability.
+# Creates many decision trees (using random samples of data & features).
+# Each tree predicts a class.
+# The majority vote among all trees is taken as the final prediction.
+# ✅ This reduces overfitting (common in single decision trees).
+# ✅ Works well for both classification and regression.
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_classification
 from sklearn.metrics import accuracy_score
@@ -36,8 +43,6 @@ print("Predicted Probabilities:", predicted_prob[0])
 
 # --- Display predictions from each individual decision tree ---
 tree_predictions = [estimator.predict(new_sample)[0] for estimator in clf.estimators_]
-print(tree_predictions)
-
 # count how many trees voted for each class
 print("\nVote counts from trees:", Counter(tree_predictions))
 

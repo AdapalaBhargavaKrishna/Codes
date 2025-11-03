@@ -24,6 +24,7 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
+# Creates a KNN classifier with K=3 neighbors. metric='manhattan' uses Manhattan distance (sum of absolute differences) instead of default Euclidean distance for measuring similarity.
 knn = KNeighborsClassifier(n_neighbors=3,metric='manhattan')
 knn.fit(X_train, y_train)
 y_pred = knn.predict(X_test)

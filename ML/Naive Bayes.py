@@ -1,3 +1,7 @@
+# Naive Bayes is a supervised machine learning algorithm based on Bayes’ Theorem — used for classification problems.
+# This program applies the Naive Bayes classification algorithm (specifically Gaussian Naive Bayes) to the Iris dataset to predict the type of flower based on its features
+# It’s called “naive” because it assumes that all features are independent of each other (which is rarely true in real life, but still works surprisingly well).
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import load_iris
