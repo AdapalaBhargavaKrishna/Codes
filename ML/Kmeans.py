@@ -1,3 +1,5 @@
+# This program applies K-Means clustering (an unsupervised learning algorithm) on the Iris dataset to group flowers into 3 clusters (Setosa, Versicolor, Virginica).
+# Then it compares the clusters with the actual labels to measure accuracy and visualize the confusion matrix.
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
@@ -15,6 +17,7 @@ plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
 plt.show()
 
+# Creates a K-Means model with 3 clusters. init='k-means++' uses a smart initialization method for better convergence. random_state=42 ensures reproducibility.
 kmeans = KMeans(n_clusters=3, init='k-means++',random_state=42)
 kmeans.fit(X)
 y_kmeans = kmeans.labels_
