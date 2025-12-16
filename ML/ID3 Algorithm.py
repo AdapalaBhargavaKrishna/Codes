@@ -10,8 +10,6 @@ class_names = load_iris().target_names
 
 # Split    
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-print(X_train.shape)
-print(X_test.shape)
 
 # Train Decision Tree (using entropy like ID3)
 clf = DecisionTreeClassifier(criterion="entropy", max_depth=5, random_state=42)
