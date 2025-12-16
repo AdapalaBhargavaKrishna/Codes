@@ -47,8 +47,7 @@ print("\nActual Prices vs Predicted Prices:")
 for i in range(len(Y)):
     print(f"Actual Price: ${Y[i] * 1000:.2f} \t Predicted Price: ${Y_pred[i] * 1000:.2f}")
 
-# 7. Visualization
-plt.figure(figsize=(8, 6))
+# 7. Visualization  
 plt.scatter(Y, Y_pred, color='blue', label='Predicted vs Actual')
 plt.plot([min(Y), max(Y)], [min(Y), max(Y)], color='red', linewidth=2, label='Perfect Prediction')
 plt.xlabel('Actual House Prices ($1000s)')

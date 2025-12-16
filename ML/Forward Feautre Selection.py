@@ -17,7 +17,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-print(X_train_scaled)
 
 # 4. Define model
 model = LogisticRegression(max_iter=200)
@@ -26,11 +25,10 @@ model = LogisticRegression(max_iter=200)
 selector = SequentialFeatureSelector(
     estimator=model,
     n_features_to_select=2,
-    direction='forward',
+    direction='forward',  #Start with no features, add one by one 
     scoring='accuracy',
     cv=5
 )
-
 selector.fit(X_train_scaled, y_train)
 
 # 6. Get selected features

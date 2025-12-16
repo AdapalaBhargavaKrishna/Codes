@@ -59,4 +59,3 @@ for i in range(5):
     )
     plt.title(f"Decision Tree {i+1} in the Random Forest")
     plt.show()
-    

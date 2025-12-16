@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_diabetes
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import LinearRegression , Lasso
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
@@ -23,11 +22,6 @@ print("Linear Regression:")
 print("Train R²:", r2_score(y_train, y_train_pred_lr))
 print("Test R²:", r2_score(y_test, y_test_pred_lr))
 
-# 3. Define different alpha values (regularization strengths)
-alphas = np.logspace(-3, 2, 50)  # Lambda values in-between 0.001 → 100
-train_scores = []
-test_scores = []
-
 # Lasso Regression
 lasso = Lasso(alpha=0.6)   # regularization strength
 lasso.fit(X_train, y_train)
@@ -39,16 +33,18 @@ print("\nLasso Regression:")
 print("Train R²:", r2_score(y_train, y_train_pred_lasso))
 print("Test R²:", r2_score(y_test, y_test_pred_lasso))
 
+# 3. Define different alpha values (regularization strengths)
+alphas = np.logspace(-3, 2, 50)  # Lambda values in-between 0.001 → 100
+train_scores = []
+test_scores = []    
+
 # 4. Train Lasso model for each alpha and record scores
 for a in alphas:
     lasso = Lasso(alpha=a, max_iter=10000)
     lasso.fit(X_train, y_train)
 
-    y_train_pred_lasso = lasso.predict(X_train)
-    y_test_pred_lasso = lasso.predict(X_test)
-
-    train_scores.append(r2_score(y_train, y_train_pred_lasso))
-    test_scores.append(r2_score(y_test, y_test_pred_lasso))
+    train_scores.append(r2_score(y_train, lasso.predict(X_train)))
+    test_scores.append(r2_score(y_test, lasso.predict(X_test)))
 
 # 5. Plot Train vs Test R² scores
 plt.figure(figsize=(8,6))

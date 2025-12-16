@@ -11,7 +11,6 @@ y = pd.Series(data.target)
 # 2. Scale features to non-negative values (required by chi2)
 scaler = MinMaxScaler()
 X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
-print(X_scaled)
 
 # 3. Apply Chi-Square test
 k = 2

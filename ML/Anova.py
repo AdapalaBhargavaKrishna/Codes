@@ -12,7 +12,6 @@ y = pd.Series(data.target)
 scaler = StandardScaler()
 X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
 
-
 # 3. Apply ANOVA F-test for feature selection
 k = 2
 anova_selector = SelectKBest(score_func=f_classif, k=k)

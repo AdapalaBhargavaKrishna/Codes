@@ -9,7 +9,6 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 # Load the dataset
 df = pd.read_csv("pima-indians-diabetes-classification.csv")
 
-# Display the first few rows of the dataset
 print("First 5 rows of the dataset:")
 print(df.head())
 
@@ -37,11 +36,9 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 # Step 7: Evaluate the Model
-# Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(" The confusion matrix is:", cm)
 
-# Accuracy Score   
 accuracy = accuracy_score(y_test, y_pred)
 print(f'Accuracy: {accuracy:.2f}')
 

@@ -11,19 +11,12 @@ X = data.data[:, [0]]  # pick one feature (MedInc = median income)
 y = data.target        # target = house price
 
 # 2. Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # 3. Create SGDRegressor model
-model = SGDRegressor(
-    max_iter=1000, tol=1e-3, eta0=0.01, learning_rate="constant", random_state=42
-)
-
-# 4. Train the model
+model = SGDRegressor(max_iter=1000, tol=1e-3, eta0=0.01, learning_rate="constant", random_state=42)
 model.fit(X_train, y_train)
 
-# 5. Predict on test data
 y_pred = model.predict(X_test)
 
 # 6. Evaluate the model

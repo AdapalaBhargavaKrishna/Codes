@@ -1,5 +1,4 @@
 # This program builds and trains an Artificial Neural Network (ANN) using the Keras library to classify whether a person is diabetic or not based on medical data from the Pima Indians Diabetes Dataset.
-
 # The dataset contains 8 input features such as pregnancies, glucose level, blood pressure, skin thickness, insulin, BMI, diabetes pedigree function, and age — and one output label indicating whether the person is diabetic (1) or not (0).
 from keras.models import Sequential
 from keras.layers import Dense
@@ -17,8 +16,7 @@ y = dataset.iloc[:, 8].values
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 model = Sequential([
     Dense(32, input_dim=8, activation='relu'),

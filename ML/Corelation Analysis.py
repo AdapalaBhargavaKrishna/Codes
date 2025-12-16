@@ -17,14 +17,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 # 3. Correlation analysis on training data
 
 plt.figure(figsize=(12,10))
-cor = X_train.corr()    
+cor = X_train.corr()
 sns.heatmap(cor, annot=True, cmap=plt.cm.CMRmap_r)
 plt.title("Feature Correlation Heatmap")
 plt.show()
 
 # Find features with correlation > 0.8
 corr_features = {col for i , col in enumerate(cor.columns)
-                 for j in range(i) if abs(cor.iloc[i,j] > 0.8)}
+                 for j in range(i) if abs(cor.iloc[i,j] > 0.8)}  #Identify highly correlated features
 
 # 5. Function to return correlation pairs above threshold
 def correlation_pairs(dataset, threshold):

@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import confusion_matrix, accuracy_score
-
+from sklearn.metrics import confusion_matrix,accuracy_score
 # Load dataset
 X, y = load_iris(return_X_y=True)
 feature_names = load_iris().feature_names
@@ -20,6 +19,7 @@ clf = DecisionTreeClassifier(
 )
 clf.fit(X_train, y_train)
 
+plt.figure(figsize=(12,8))
 plot_tree(
     clf,
     feature_names=feature_names,

@@ -21,7 +21,7 @@ print("\nEncoded Data:")
 print(X)
 
 # Calculate MI scores
-mi_scores = mutual_info_classif(X, y, discrete_features=True)
+mi_scores = mutual_info_classif(X, y, discrete_features=True) 
 
 # Create a Series with MI scores and sort
 mi_results = pd.Series(mi_scores, index=X.columns).sort_values(ascending=False)

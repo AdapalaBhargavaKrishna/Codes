@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
@@ -8,7 +7,6 @@ from sklearn.decomposition import PCA
 iris = load_iris()
 X = iris.data
 y = iris.target
-
 print("Original shape:", X.shape)   # (150 samples, 4 features)
 
 # Step 3: Standardize the data (important for PCA)
@@ -31,9 +29,6 @@ print("\nEigenvalues:", pca.explained_variance_)
 #How much information (variance) from the original data is preserved in each principal component.”
 print("\n orginal information preserved in the PCAs:",pca.explained_variance_ratio_)
 
-# Step 5: Plot results
-print("\n")
-plt.figure(figsize=(8,6))
 plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap="viridis", edgecolor="k", s=80)
 plt.xlabel("Principal Component 1")
 plt.ylabel("Principal Component 2")

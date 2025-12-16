@@ -16,11 +16,9 @@ X_scaled = scaler.fit_transform(X)
 lda = LDA(n_components=2) #no.of linear discriminators(new axes)
 X_lda = lda.fit_transform(X_scaled, y)
 print("\nshape of  LDA:",X_lda.shape)
-print("\n")
+
 print(X_lda)
 
-# 4. Plot the LDA projection
-plt.figure(figsize=(8,6))
 for label, marker, color in zip(range(3), ('o', 's', '^'), ('red', 'green', 'blue')):
     plt.scatter(
         X_lda[y == label, 0],

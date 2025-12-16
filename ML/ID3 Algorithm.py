@@ -8,14 +8,17 @@ X, y = load_iris(return_X_y=True)
 feature_names = load_iris().feature_names
 class_names = load_iris().target_names
 
-# Split    
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # Train Decision Tree (using entropy like ID3)
-clf = DecisionTreeClassifier(criterion="entropy", max_depth=5, random_state=42)
+clf = DecisionTreeClassifier(
+    criterion="entropy", 
+    max_depth=5, 
+    random_state=42
+    )
 clf.fit(X_train, y_train)
 
-# Plot the tree
 plt.figure(figsize=(12,8))
 plot_tree(clf,
           feature_names=feature_names,
@@ -31,7 +34,6 @@ print("Class of the Flower:",clf.predict([[5.9,3.5,5.1,1.8]]))
 
 # Prediction
 pred = clf.predict([[3, 15, 4, 1.5]])[0]
-
 # Print class number and name
 print("Class of the Flower:", pred, "-", class_names[pred])
 

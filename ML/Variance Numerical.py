@@ -22,7 +22,7 @@ print("\nVariance of each feature:")
 print(variances)
 
 # 3. Apply Variance Threshold
-sel = VarianceThreshold(threshold=0)
+sel = VarianceThreshold(threshold=0) #Removes features whose variance ≤ threshold
 X_new = sel.fit_transform(df)
 
 # Get a mask of selected features
