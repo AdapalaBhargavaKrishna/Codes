@@ -7,9 +7,6 @@ set ns [new Simulator]
 $ns color 1 blue
 $ns color 2 red
 
-# Enable Distance Vector routing protocol
-$ns rtproto DV
-
 # Open NAM trace file
 set nf [open out.nam w]
 $ns namtrace-all $nf
