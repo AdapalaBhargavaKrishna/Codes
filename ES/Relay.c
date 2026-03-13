@@ -1,6 +1,5 @@
 // port 0 to port 11
 #include <reg51.h>
-
 #define relay P0
 
 void delay_ms(unsigned int);
