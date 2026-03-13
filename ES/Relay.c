@@ -3,7 +3,6 @@
 #define relay P0
 
 void delay_ms(unsigned int);
-
 void main(void)
 {
     while(1)
