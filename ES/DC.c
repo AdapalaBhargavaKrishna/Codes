@@ -1,3 +1,5 @@
+// port 2 to port 12
+
 #include <reg51.h>
 
 sbit mtr_1 = P2^0;
