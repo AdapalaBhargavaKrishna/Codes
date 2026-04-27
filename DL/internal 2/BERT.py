@@ -1,262 +1,271 @@
-from transformers import BertTokenizer, TFBertForSequenceClassification
-import tensorflow as tf
+from transformers import BertTokenizer, BertForSequenceClassification
+import torch
 
+# Step 1: Load pre-trained BERT tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased')
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased')
 
-text = "movie was not good"
-inputs = tokenizer(text, return_tensors='tf', truncation=True, padding=True, max_length=512)
+# Step 2: Encode the input text into BERT's format
+text = "movie was not good"  # Example input
+inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
 
-outputs = model(inputs)
+# Step 3: Make a prediction
+with torch.no_grad():
+    outputs = model(**inputs)
 logits = outputs.logits
 print(logits)
 
-probabilities = tf.nn.softmax(logits, axis=-1)
-predicted_class = tf.argmax(probabilities, axis=-1).numpy()[0]
+# Step 4: Convert logits to probabilities (for sentiment analysis, we use softmax activation)
+probabilities = torch.nn.functional.softmax(logits, dim=-1)
+
+# Step 5: Get the predicted sentiment (0 for negative, 1 for positive)
+predicted_class = torch.argmax(probabilities, dim=-1).item()
 print("Predicted Sentiment:", "Positive" if predicted_class == 1 else "Negative")
 
 """
 ================================================================================
-BERT SENTIMENT ANALYSIS (TRANSFER LEARNING)
+BERT SENTIMENT ANALYSIS (PYTORCH VERSION)
 ================================================================================
 
 1. ARCHITECTURE
 ================================================================================
 Input: Text sequence ("movie was not good")
 ↓
-BERT Tokenizer:
+BERT Tokenizer (PyTorch - 'pt' tensors):
 - Converts text to tokens + attention mask + token type IDs
 - Adds [CLS] at start, [SEP] at end
 - ["[CLS]", "movie", "was", "not", "good", "[SEP]"]
-- Maps to token IDs (vocab size 30,522)
+- Returns PyTorch tensors (not TensorFlow)
 ↓
-BERT-base-uncased Model (12 layers):
-Layer 0: Token Embeddings (30,522 → 768) + Position + Segment
-Layer 1-12: Transformer Encoder Blocks
-  - Multi-Head Self-Attention (12 heads)
-  - Feed-Forward Network (768 → 3072 → 768)
-  - LayerNorm + Residual connections
-  - GELU activation
+BERT-base-uncased Model (110M parameters):
+- 12 Transformer Encoder Layers
+- Hidden size: 768
+- 12 Attention heads
+- Feed-forward: 3072
+- Activation: GELU
+- LayerNorm after each sublayer
+- Residual connections
 ↓
-[CLS] token output (classification token)
+[CLS] token output (768-dim)
 ↓
 Classification Head:
-  - Dense: 768 → 2 neurons
-  - Output: logits (2 numbers)
+  - Dropout (0.1)
+  - Linear: 768 → 2 (logits)
+  - No activation (raw scores)
 ↓
 Softmax: Probabilities for [Negative, Positive]
-
-Model Details:
-- Encoder layers: 12
-- Hidden size: 768
-- Attention heads: 12
-- Total parameters: 110 million
 
 2. NUMBER OF LEARNING PARAMETERS
 ================================================================================
 Component                    | Parameters
 -----------------------------|-----------------------------------------------
-BERT Base Model              | 109,482,240 (frozen? No - trainable)
-Embedding Layer              | 30,522 × 768 = 23,440,896
-Position + Segment Embeddings| 768 × 512 × 2 = 786,432
+BERT Base Model              | 109,482,240
+Embedding (token, position)  | 23,440,896 + 786,432 = 24,227,328
 12 Transformer Layers:
-  - Self-attention (12 heads) | 12 × 4 × (768×768) = 28,311,552
-  - Feed-forward (3072)       | 12 × (768×3072 + 3072×768) = 56,623,104
-  - LayerNorm + Bias          | 12 × (768×2) × 2 = 36,864
+  - Multi-head attention (12) | 28,311,552
+  - Feed-forward network     | 56,623,104
+  - LayerNorm layers         | 36,864
 Classification Head          | 768 × 2 + 2 = 1,538
 -----------------------------|-----------------------------------------------
-TOTAL TRAINABLE              | ~110 million parameters
+TOTAL TRAINABLE              | ~110 million (109,483,778)
 
 3. LOSS CALCULATION FORMULA
 ================================================================================
-Binary Classification (Negative vs Positive):
-MFM (Masked Language Model) pre-training + Fine-tuning loss
+Cross-Entropy Loss (PyTorch implementation):
 
-During fine-tuning (sentiment analysis):
-Loss = -1/N Σ [y_i × log(p_i) + (1-y_i) × log(1-p_i)]
+During training (not in this code):
+Loss = CrossEntropyLoss(logits, labels)
+
+CrossEntropyLoss = -1/N Σ log(exp(logits[y_i]) / Σ exp(logits[c]))
+                           i=1..N        c
+
+Inference only (this code):
+- No loss calculation
+- Only forward pass with torch.no_grad()
+
+For binary sentiment:
+Binary Cross-Entropy (using logits directly):
+Loss = -[y × log(σ(logits)) + (1-y) × log(1-σ(logits))]
 
 where:
-- N = batch size
-- y_i = true label (0 = Negative, 1 = Positive)
-- p_i = predicted probability (after softmax)
-
-Example for "movie was not good" (Negative sentiment):
-y = 0
-p_negative = 0.85, p_positive = 0.15
-Loss = -[0 × log(0.85) + 1 × log(0.15)] = -log(0.15) = 1.897
+- y = true label (0 or 1)
+- σ = sigmoid function
+- logits = raw model outputs
 
 4. WEIGHT UPDATE FORMULA
 ================================================================================
-AdamW Optimizer (BERT default):
+AdamW Optimizer (PyTorch implementation):
 
 θ(t+1) = θ(t) - η × [(m̂(t) / (√v̂(t) + ε)) + λθ(t)]
 
-where:
-- θ(t) = weights at step t
-- η = learning rate (typically 2e-5 for fine-tuning)
-- m̂(t) = bias-corrected first moment
-- v̂(t) = bias-corrected second moment
-- λ = weight decay (prevents overfitting)
-- ε = 10⁻⁸
+PyTorch optimizer would be:
+optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5, weight_decay=0.01)
 
-Key difference from Adam: Separate weight decay term (λθ)
+Features:
+- Weight decay (λθ) applied separately from gradient
+- Bias correction for moments
+- Typically lr=2e-5 for BERT fine-tuning
+- ε = 1e-8 (default)
 
 5. SAMPLES USED FOR TRAINING, VALIDATION, TESTING
 ================================================================================
-In this specific code (inference only):
-- Training: 0 (no training performed)
-- Validation: 0
-- Testing: 1 (single sentence: "movie was not good")
+This code (inference only):
+- Training: 0 samples
+- Validation: 0 samples
+- Testing: 1 sample ("movie was not good")
 
-BERT was PRE-TRAINED on:
-- Training: 3.3 billion words (BookCorpus + English Wikipedia)
-- Data: Unlabeled text for Masked LM + Next Sentence Prediction
-- Fine-tuning (sentiment): Typically uses labeled datasets like IMDb (25k training)
+BERT was pre-trained on (before this code):
+- Training: 3.3 billion words (BookCorpus + Wikipedia)
+- Unlabeled text (Masked LM task)
+- Validation: Typically 10% of pre-training data
 
-This code uses PRE-TRAINED BERT for inference:
-- No fine-tuning on sentiment data
-- BERT was pre-trained on generic text, not specifically sentiment
+For actual sentiment fine-tuning (not done here):
+- Would need labeled data (e.g., SST-2: 67k training, 872 validation, 1.8k test)
 
 6. LABELED OR UNLABELED DATA?
 ================================================================================
-PRE-TRAINING: Unlabeled Data ✓
-- BERT pre-training uses UNLABELED text
-- Masked Language Model (predict masked words) - self-supervised
-- Next Sentence Prediction (binary classification) - self-supervised
+PRE-TRAINING (before loading model): Unlabeled Data ✓
+- BERT learns from raw text without labels
+- Masked Language Model (self-supervised)
+- Predicts masked tokens using context
 
-FINE-TUNING FOR SENTIMENT: Labeled Data ✓
-- Sentiment analysis requires labeled data (positive/negative)
-- This code does NOT fine-tune (uses pre-trained model directly)
+FINE-TUNING (not performed here): Labeled Data ✓
+- Sentiment analysis requires labels (Positive/Negative)
+- Would need labeled examples like:
+  - "great movie" → Positive (1)
+  - "terrible movie" → Negative (0)
 
-For actual sentiment analysis: Would need labeled reviews:
-- Input: "movie was great" → Label: Positive (1)
-- Input: "movie was terrible" → Label: Negative (0)
+CURRENT INFERENCE (this code): No training data
+- No labels needed for prediction
+- Pre-trained model predicts sentiment without fine-tuning
 
+7. PYTORCH VS TENSORFLOW DIFFERENCES
 ================================================================================
-BERT INPUT FORMAT
+Feature                 | TensorFlow Version | PyTorch Version
+------------------------|--------------------|--------------------
+Tensor Library          | tf.Tensor          | torch.Tensor
+Return type             | return_tensors='tf'| return_tensors='pt'
+Inference context       | No gradient tape   | torch.no_grad()
+Softmax                 | tf.nn.softmax      | torch.nn.functional.softmax
+Model class             | TFBert...          | Bert...
+Argmax                  | tf.argmax().numpy()| torch.argmax().item()
+Training               | model.fit()        | Manual train loop
+
+8. TORCH.NO_GRAD() EXPLAINED
 ================================================================================
-Tokenization Process:
-Input text: "movie was not good"
+Context manager that disables gradient calculation:
+with torch.no_grad():
+    outputs = model(**inputs)
+
+Benefits:
+- No computation graph built
+- Reduced memory usage
+- Faster inference (no gradient tracking)
+- Essential for inference (not training)
+
+Without torch.no_grad():
+- Would still work but waste memory
+- Track gradients unnecessarily
+- Slower for prediction
+
+9. SOFTMAX vs SIGMOID FOR SENTIMENT
+================================================================================
+Model has 2 output neurons (binary classification):
+Option 1 (model uses): Softmax
+probabilities = softmax(logits)  # [p_neg, p_pos], sum=1
+predicted_class = argmax(probabilities)
+
+Option 2: Sigmoid (single neuron)
+probability = sigmoid(logit)  # 0 to 1
+predicted_class = 1 if probability > 0.5 else 0
+
+BERT base model uses Softmax with 2 outputs
+
+10. INPUT TENSORS (WHAT TOKENIZER RETURNS)
+================================================================================
+inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
+
+Returns dictionary:
+{
+    'input_ids': tensor([[101, 3185, 2001, 2025, 2204, 102, 0, ..., 0]]),  # shape (1, 512)
+    'attention_mask': tensor([[1, 1, 1, 1, 1, 1, 0, ..., 0]]),             # shape (1, 512)
+    'token_type_ids': tensor([[0, 0, 0, 0, 0, 0, 0, ..., 0]])              # shape (1, 512)
+}
+
+Passing to model:
+model(**inputs)  # Unpacks dictionary as keyword arguments
+# Equivalent to: model(input_ids=..., attention_mask=..., token_type_ids=...)
+
+11. LOGITS TO SENTIMENT PROCESS
+================================================================================
+Example output:
+logits = [[1.2, -0.8]]  # Raw scores
 ↓
-Add special tokens: ["[CLS]", "movie", "was", "not", "good", "[SEP]"]
+softmax → [[0.88, 0.12]]  # Probabilities
 ↓
-Token IDs: [101, 3185, 2001, 2025, 2204, 102]
+argmax → 0 (index 0 has higher probability)
 ↓
-Attention Mask: [1, 1, 1, 1, 1, 1] (1 = real token, 0 = padding)
-↓
-Token Type IDs: [0, 0, 0, 0, 0, 0] (sentence A = 0)
-↓
-Padding to max_length=512: Adds zeros
+Negative sentiment
 
-Why [CLS] token?
-- Special token at sequence start
-- Final hidden state used for classification
-- Aggregates entire sequence information
+Interpretation:
+- Logits can be any real number
+- Positive logit = evidence for that class
+- Softmax converts to probability distribution
+- Negative sentiment if p_negative > p_positive
 
-Why truncation=True?
-- BERT max length = 512 tokens
-- Longer texts are truncated
+12. WHY PRE-TRAINED BERT CAN DO SENTIMENT
+================================================================================
+1. Masked Language Modeling:
+   - Predicts masked words like "[MASK] movie"
+   - Learns "good" has positive associations
+   - Learns "bad" has negative associations
 
-================================================================================
-TRANSFORMER VS LSTM
-================================================================================
-Feature                 | LSTM (prev examples) | BERT Transformer
-------------------------|----------------------|--------------------
-Architecture            | Sequential (RNN)     | Parallel (Attention)
-Context                 | Limited (vanishing)  | Full bidirectional
-Positional info         | Natural (time steps) | Position embeddings
-Training speed          | Slower (sequential)  | Faster (parallel)
-Long-range dependencies | Struggles >100 tokens| Handles 512 tokens
-Parameters (base)       | ~10M (custom)        | 110M (pre-trained)
-Transfer learning       | From scratch         | Fine-tuning
+2. Next Sentence Prediction:
+   - Learns discourse relationships
+   - Understands sentiment transition between sentences
 
-================================================================================
-ATTENTION MECHANISM (SIMPLIFIED)
-================================================================================
-Query, Key, Value (Q, K, V):
-Attention(Q,K,V) = softmax(QK^T/√d_k) V
+3. Large-scale pre-training:
+   - Trained on diverse text including reviews
+   - Exposure to sentiment expressions
+   - Can recognize negation ("not good")
 
-For "movie was not good":
-- Each word pays attention to all other words
-- "not" attends strongly to "good" (negation)
-- "good" attends to "movie" (subject)
-- Bidirectional: Sees left + right context
+Limitations without fine-tuning:
+- Biased toward frequent patterns
+- May fail on domain-specific sentiment
+- More errors than fine-tuned model
 
-Multi-head attention (12 heads):
-- Different heads learn different relationships
-- Head1: Grammar patterns
-- Head2: Negation detection
-- Head3: Subject-verb agreement
+13. PRACTICAL USAGE NOTES
+================================================================================
+Memory requirements:
+- Model: ~420 MB (bert-base-uncased)
+- With gradients: ~840 MB
+- With torch.no_grad(): ~420 MB (inference only)
 
-================================================================================
-WHAT BERT LEARNS
-================================================================================
-Pre-training tasks:
-1. Masked Language Model (15% of tokens masked)
-   - Predict masked word from context
-   - "movie was [MASK] good" → predicts "not"
-   - Learns word relationships
+Inference speed:
+- Single sentence: ~0.05-0.1 seconds on GPU
+- Batch of 32: ~0.3-0.5 seconds
 
-2. Next Sentence Prediction (50% real, 50% random)
-   - Predict if sentence B follows sentence A
-   - Learns discourse and coherence
+For production:
+- Use batch inference for efficiency
+- Fine-tune on domain data
+- Consider smaller models (DistilBERT)
+- Use quantization for edge deployment
 
-Fine-tuning (this would need labeled data):
-- Replace classification head (768→2)
-- Train on labeled sentiment data
-- Adjust all weights for sentiment task
+14. COMPLETE TRAINING EXAMPLE (FOR REFERENCE)
+================================================================================
+# This would be added for actual training:
+from transformers import BertTokenizer, BertForSequenceClassification
+from torch.utils.data import DataLoader
+import torch.optim as optim
 
-================================================================================
-WHY THIS CODE WORKS FOR SENTIMENT
-================================================================================
-Despite no fine-tuning, BERT has some sentiment capability:
-- Pre-trained on diverse text (reviews, books, articles)
-- Learned sentiment associations from context
-- "good" → positive, "bad" → negative
-- Can understand negation ("not good" → negative)
+model.train()
+optimizer = optim.AdamW(model.parameters(), lr=2e-5)
 
-For production sentiment analysis:
-- Would fine-tune on IMDb or SST-2 (92-94% accuracy)
-- This code may make mistakes on subtle examples
-
-================================================================================
-LIMITATIONS OF THIS CODE
-================================================================================
-1. No fine-tuning (using generic BERT)
-2. Single sentence inference only
-3. No batch processing
-4. No training loop
-5. May struggle with sarcasm ("Yeah, great movie" said sarcastically)
-6. No handling of multi-sentence inputs
-
-================================================================================
-TO ACTUALLY TRAIN FOR SENTIMENT
-================================================================================
-Would need:
-1. Labeled dataset (IMDb reviews: 25k train, 25k test)
-2. Fine-tuning loop:
-    model.compile(optimizer=tf.keras.optimizers.Adam(2e-5),
-    loss=tf.keras.losses.BinaryCrossentropy(),
-    metrics=['accuracy'])
-    model.fit(train_data, validation_data=test_data, epochs=3)
-
-3. Typically achieves 92-94% accuracy on SST-2
-
-================================================================================
-BERT VARIANTS
-================================================================================
-- bert-base-uncased: 110M params (this one)
-- bert-large-uncased: 340M params (24 layers)
-- DistilBERT: 66M params (faster, slightly less accurate)
-- RoBERTa: Optimized BERT (better performance)
-- ALBERT: Parameter sharing (smaller memory)
-
-================================================================================
-APPLICATIONS
-================================================================================
-- Sentiment Analysis (reviews, social media)
-- Question Answering (SQuAD)
-- Named Entity Recognition (NER)
-- Text Classification (topics, spam)
-- Natural Language Inference (NLI)
+for epoch in range(3):
+    for batch in train_dataloader:
+        optimizer.zero_grad()
+        outputs = model(**batch)
+        loss = outputs.loss
+        loss.backward()
+        optimizer.step()
 """
