@@ -1,12 +1,10 @@
-import keras
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import VGG16
-from tensorflow import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from keras import Sequential
-from keras.layers import Dense,Flatten,Conv2D,MaxPooling2D,Dropout
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 !mkdir -p ~/.kaggle
 !cp kaggle.json ~/.kaggle/
 !kaggle datasets download -d salader/dogsvscats
@@ -14,12 +12,13 @@ import zipfile
 zip_ref = zipfile.ZipFile('/content/dogsvscats.zip','r')
 zip_ref.extractall('/content')
 zip_ref.close()
-train_ds = keras.utils.image_dataset_from_directory(
+
+train_ds = tf.keras.utils.image_dataset_from_directory(
     directory='/content/train', labels='inferred', label_mode='int',
-    batch_size=32, image_size=(224,224))
-test_ds = keras.utils.image_dataset_from_directory(
+    batch_size=32, image_size=(256,256))  # Changed to 256x256
+test_ds = tf.keras.utils.image_dataset_from_directory(
     directory='/content/test', labels='inferred', label_mode='int',
-    batch_size=32, image_size=(224,224))
+    batch_size=32, image_size=(256,256))  # Changed to 256x256
 
 def process(image,label):
     image = tf.cast(image/255., tf.float32)
@@ -56,6 +55,7 @@ plt.show()
 import cv2
 test_img = cv2.imread('/content/test/dogs/dog.10006.jpg')
 plt.imshow(test_img)
+plt.show()  # Added missing plt.show()
 test_img = cv2.resize(test_img, (256,256))
 test_input = test_img.reshape((1,256,256,3))
 p = model.predict(test_input)
