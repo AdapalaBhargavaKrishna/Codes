@@ -5,7 +5,7 @@ from tensorflow import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from keras import Sequential
-from keras.layers import Dense,Flatten,Conv2D,MaxPooling2D,Dropout
+from keras.layers import Dense,Flatten,Dropout
 !mkdir -p ~/.kaggle
 !cp kaggle.json ~/.kaggle/
 !kaggle datasets download -d salader/dogsvscats
