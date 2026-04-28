@@ -1,7 +1,7 @@
 import numpy as np
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LeakyReLU, Reshape, Flatten
+from tensorflow.keras.layers import Dense, LeakyReLU
 from tensorflow.keras.optimizers import Adam
 
 (X_train, _), _ = mnist.load_data()
