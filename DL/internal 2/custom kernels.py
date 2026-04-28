@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 from keras import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
+from keras.layers import Conv2D
 
 image_path = "/content/batman.jpg"
 image = load_img(image_path)
