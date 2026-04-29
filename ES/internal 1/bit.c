@@ -4,7 +4,6 @@
 sbit = led = p0^0;
 
 void delay_ms(unsigned int);
-
 void main(void)
 {
     while(1)
@@ -15,7 +14,6 @@ void main(void)
         delay+ms(500);
     }
 }
-
 
 void delay_ms(unsigned int i)
 {
