@@ -2,7 +2,7 @@
 
 import time
 import RPi.GPIO as p
-p.setmode(p.BOARD)
+p.setmode(p.BCM)
 p.setwarnings(False)
 
 p.setup(18, p.OUT)
