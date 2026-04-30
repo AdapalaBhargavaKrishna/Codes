@@ -1,0 +1,18 @@
+# 3 inps same as gas
+
+import RPi.GPIO as p
+import time
+p.setmode(p.BCM)
+p.setup(18, p.IN)
+
+try:
+    while True:
+        i = p.input(18)
+        if (i == 0):
+            print('No Object')
+            time.sleep(0.5)
+        elif (i == 1):
+            print('Object Detected')
+            time.sleep(0.5)
+except:
+    p.cleanup()
