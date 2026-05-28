@@ -41,7 +41,6 @@ Input Layer (1)    Output Layer (1)
            [Bias]
 '''
 
-
 def mp_neuron(x, threshold):
     z = np.sum(x)
     return 1 if z >= threshold else 0
