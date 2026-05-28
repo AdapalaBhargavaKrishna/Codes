@@ -13,7 +13,7 @@ p.setup(26, p.OUT)
 
 while True:
 
-    p.output(27, p.HIGH)
+    p.output(27, p.LOW)
     p.output(18, p.HIGH)
     p.output(23, p.HIGH)
     p.output(24, p.HIGH)
@@ -21,7 +21,7 @@ while True:
     print('LED on')
     time.sleep(1)
 
-    p.output(27, p.LOW)
+    p.output(27, p.HIGH)
     p.output(18, p.LOW)
     p.output(23, p.LOW)
     p.output(24, p.LOW)

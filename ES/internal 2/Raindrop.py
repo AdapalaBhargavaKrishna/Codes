@@ -1,3 +1,4 @@
+#normal
 from time import sleep
 from gpiozero import InputDevice
 no_rain = InputDevice(18)

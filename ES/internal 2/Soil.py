@@ -1,4 +1,5 @@
 # Same as Raindrop
+#normal
 import RPi.GPIO as GPIO
 import time
 channel = 4
