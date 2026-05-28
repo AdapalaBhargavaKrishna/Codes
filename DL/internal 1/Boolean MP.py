@@ -55,13 +55,3 @@ for x in inputs:
 print('\nOR Gate using MP Neuron')
 for x in inputs:
     print(x, mp_neuron(x, threshold=1))
-
-
-print('\nNOR Gate using MP Neuron')
-print('NOT possible directly! Need negative weights')
-print('Would need: NOT(x1 OR x2)')
-
-print('\nNOT Gate using MP Neuron')
-print('Input: [x]')
-for x in [0,1]:
-    print(f'{x} → Need negative weight, MP cannot')
