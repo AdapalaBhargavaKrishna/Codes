@@ -1,21 +1,12 @@
 import matplotlib.pyplot as plt
 from tensorflow.keras.utils import load_img, img_to_array
-import tensorflow as tf
 import numpy as np
-from tensorflow import keras
 from keras import Sequential
 from keras.layers import Conv2D
 
-image_path = "/content/batman.jpg"
-image = load_img(image_path)
+image = load_img("/content/batman.jpg")    
 image_array = img_to_array(image)
-plt.imshow(image_array)
-print(image_array.shape)
-
-image_resized = load_img(image_path, target_size=(424, 424))
-image_array = img_to_array(image_resized)
 image_shape = image_array.shape
-print(image_shape)
 
 model = Sequential([
     Conv2D(filters=1, kernel_size=(3,3), strides=(1,1), activation=None, input_shape=image_shape)
@@ -25,16 +16,14 @@ plt.imshow(filtered_image[0])
 plt.axis("off")
 plt.show()
 
-conv_layer = model.layers[0]
-weights, biases = conv_layer.get_weights()
-print("Kernel Weights Shape:", weights.shape)
+weights, biases = model.layers[0].get_weights()
 
-gray_image = load_img(image_path, color_mode="grayscale")
+gray_image = load_img("/content/batman.jpg", color_mode="grayscale")
 plt.imshow(gray_image, cmap="gray")
-gray_image = load_img(image_path, color_mode="grayscale", target_size=(224, 224))
+
+gray_image = load_img("/content/batman.jpg", color_mode="grayscale", target_size=(224, 224))
 image_array = img_to_array(gray_image)
 image_shape = image_array.shape
-print(image_shape)
 
 kernel = np.array([[[-1, 1, 1],
                     [-1, 1, 1],
@@ -50,7 +39,6 @@ bias = np.zeros(1)
 model.layers[0].set_weights([kernel, bias])
 
 filtered_image = model.predict(image_array.reshape(1, 224, 224, 1))
-
 plt.imshow(filtered_image[0])
 plt.axis("off")
 plt.show()

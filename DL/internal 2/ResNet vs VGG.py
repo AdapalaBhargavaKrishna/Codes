@@ -15,6 +15,7 @@ zip_ref.close()
 train_ds = tf.keras.utils.image_dataset_from_directory(
     directory='/content/train', labels='inferred', label_mode='int',
     batch_size=32, image_size=(256,256))
+
 test_ds = tf.keras.utils.image_dataset_from_directory(
     directory='/content/test', labels='inferred', label_mode='int',
     batch_size=32, image_size=(256,256))
@@ -30,10 +31,13 @@ input_layer = Input(shape=(256,256,3))
 vgg = VGG16(weights='imagenet', include_top=False, input_tensor=input_layer)
 resnet = ResNet50(weights='imagenet', include_top=False, input_tensor=input_layer)
 
-for layer in vgg.layers:
-    layer.trainable = False
-for layer in resnet.layers:
-    layer.trainable = False
+# for layer in vgg.layers:
+#     layer.trainable = False
+# for layer in resnet.layers:
+#     layer.trainable = False
+
+vgg.trainable = False
+resnet.trainable = False
 
 vgg_features = GlobalAveragePooling2D()(vgg.output)
 resnet_features = GlobalAveragePooling2D()(resnet.output)

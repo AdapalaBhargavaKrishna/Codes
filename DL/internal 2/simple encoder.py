@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
@@ -9,23 +10,22 @@ x_test = x_test.astype('float32') / 255.
 x_train = x_train.reshape((len(x_train), 784))
 x_test = x_test.reshape((len(x_test), 784))
 
-encoding_dim = 32
 input_img = Input(shape=(784,))
-encoded = Dense(encoding_dim, activation='relu')(input_img)
+encoded = Dense(32, activation='relu')(input_img)
 decoded = Dense(784, activation='sigmoid')(encoded)
 autoencoder = Model(input_img, decoded)
+
 autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 autoencoder.fit(x_train, x_train, epochs=10, batch_size=256, shuffle=True, validation_data=(x_test, x_test))
 encoded_imgs = autoencoder.predict(x_test)
 
-import matplotlib.pyplot as plt
 n = 10
-plt.figure(figsize=(20, 4))
 for i in range(n):
     plt.subplot(2, n, i + 1)
     plt.imshow(x_test[i].reshape(28, 28), cmap='gray')
     plt.title("Original")
     plt.axis('off')
+    
     plt.subplot(2, n, i + 1 + n)
     plt.imshow(encoded_imgs[i].reshape(28, 28), cmap='gray')
     plt.title("Reconstructed")

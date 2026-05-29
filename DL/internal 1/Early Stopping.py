@@ -1,5 +1,3 @@
-import tensorflow as tf
-import numpy as np
 import matplotlib.pyplot as plt
 from mlxtend.plotting import plot_decision_regions
 from tensorflow.keras.models import Sequential
@@ -8,16 +6,8 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_circles
 from tensorflow.keras.optimizers import Adam
-import seaborn as sns
 
 X , y = make_circles(n_samples = 100, noise = 0.1, random_state = 1)
-
-plt.figure(figsize=(6,4))
-sns.scatterplot(x=X[:,0], y=X[:,1], hue=y)
-plt.title("Circles Dataset (Inner circle = Class 0, Outer circle = Class 1)")
-plt.xlabel("Feature 1")
-plt.ylabel("Feature 2")
-plt.show()
 
 X_train , X_test , y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=2)
 
@@ -26,15 +16,10 @@ model.add(Dense(128, input_dim = 2, activation = 'relu'))
 model.add(Dense(1, activation = 'sigmoid'))
 
 model.compile(loss = 'binary_crossentropy', optimizer = Adam(learning_rate = 0.01), metrics = ['accuracy'])
-
 history = model.fit(X_train , y_train, validation_data = (X_test , y_test), epochs = 3500, verbose = 1)
 
 train_acc = history.history['accuracy'][-1] * 100
 val_acc = history.history['val_accuracy'][-1] * 100
-
-print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
-print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
-print(f"Difference between Training and Validation Accuracy: {abs(train_acc - val_acc):.2f}%")
 
 if train_acc - val_acc >= 5:
     print("\nOverfitting is there in the model")
@@ -54,7 +39,6 @@ model.add(Dense(256, input_dim=2, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer=Adam(learning_rate=0.01), metrics=['accuracy'])
-
 callbacks = EarlyStopping(
     monitor = 'val_loss',
     patience = 10,
@@ -64,12 +48,6 @@ callbacks = EarlyStopping(
 )
 
 history = model.fit(X_train, y_train, validation_data = (X_test, y_test), epochs=3500, callbacks=callbacks)
-
-best_epoch = history.history['val_loss'].index(min(history.history['val_loss']))
-
-print(f"Best Epoch         : {best_epoch + 1}")
-print(f"Train Accuracy     : {history.history['accuracy'][best_epoch]:.4f}")
-print(f"Validation Accuracy: {history.history['val_accuracy'][best_epoch]:.4f}")
 
 plt.plot(history.history['loss'], label='train')
 plt.plot(history.history['val_loss'], label='test')

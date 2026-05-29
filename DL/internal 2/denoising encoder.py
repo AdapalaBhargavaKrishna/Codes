@@ -17,7 +17,6 @@ x_train_noisy = np.clip(x_train_noisy, 0., 1.)
 x_test_noisy = np.clip(x_test_noisy, 0., 1.)
 
 n = 10
-plt.figure(figsize=(20, 2))
 for i in range(1, n + 1):
     ax = plt.subplot(1, n, i)
     plt.imshow(x_test_noisy[i].reshape(28, 28))
@@ -44,12 +43,12 @@ autoencoder.fit(x_train_noisy, x_train, epochs=10, batch_size=128, shuffle=True,
 decoded_imgs = autoencoder.predict(x_test_noisy)
 
 n = 10
-plt.figure(figsize=(20, 4))
 for i in range(n):
     plt.subplot(2, n, i + 1)
     plt.imshow(x_test_noisy[i].reshape(28, 28), cmap="gray")
     plt.title("Noisy")
     plt.axis("off")
+    
     plt.subplot(2, n, i + 1 + n)
     plt.imshow(decoded_imgs[i].reshape(28, 28), cmap="gray")
     plt.title("Denoised")

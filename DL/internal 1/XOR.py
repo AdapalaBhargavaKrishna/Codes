@@ -1,11 +1,8 @@
-# Implement XOR operation using MLP
-
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
-# XOR dataset
 X = np.array([[0,0],
               [0,1],
               [1,0],
@@ -13,8 +10,6 @@ X = np.array([[0,0],
 
 y = np.array([0,1,1,0])
 
-# Plot dataset
-plt.figure()
 for i in range(len(X)):
     if y[i] == 0:
         plt.scatter(X[i][0], X[i][1], marker='o', label='Class 0' if i==0 else "")
@@ -27,29 +22,18 @@ plt.legend()
 plt.grid()
 plt.show()
 
-# MLP Model
 model = Sequential([
     Dense(4, activation='relu', input_shape=(2,)),
     Dense(1, activation='sigmoid')
 ])
-
-# Compile model
-model.compile(optimizer='adam',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
-
-# Train model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 history = model.fit(X, y, epochs=500, verbose=0)
-
-# Predictions
 pred = model.predict(X)
 
 print("\nPredictions:")
 for i in range(len(X)):
     print(X[i], "->", round(pred[i][0]))
 
-# Training loss graph
-plt.figure()
 plt.plot(history.history['loss'])
 plt.title("Training Loss")
 plt.xlabel("Epochs")
@@ -170,4 +154,21 @@ The network learns weights that create the XOR pattern:
 - Third hidden neuron helps with separation
 - Fourth neuron acts as inhibitor for (1,1)
 - Output combines these to produce correct XOR
+
+Architecture Diagram:
+
+          Hidden Layer
+        [h1] [h2] [h3] [h4]
+
+x1 -----> O    O    O    O
+            \  |   / 
+             \ |  /
+x2 -----> O----O----O----O
+
+                |
+                v
+
+            Output Layer
+                 [y]
+
 """

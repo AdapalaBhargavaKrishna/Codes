@@ -1,7 +1,4 @@
-import tensorflow as tf
-import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.datasets import make_circles
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
@@ -11,10 +8,6 @@ X, y = make_circles(n_samples=1000, noise=0.2, factor=0.5, random_state=42)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-plt.figure()
-sns.scatterplot(x=X[:,0], y=X[:,1], hue=y)
-plt.title("Make Circles Dataset")
-plt.show()
 
 model_no_dropout = Sequential([
     Dense(64, activation='relu', input_shape=(2,)),
@@ -22,27 +15,17 @@ model_no_dropout = Sequential([
     Dense(1, activation='sigmoid')
 ])
 
-model_no_dropout.compile(optimizer='adam',
-                         loss='binary_crossentropy',
-                         metrics=['accuracy'])
+model_no_dropout.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-history_no = model_no_dropout.fit(X_train, y_train,
-                                  epochs=50,
-                                  batch_size=32,
-                                  validation_split=0.2)
+history_no = model_no_dropout.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.2)
 train_acc = history_no.history['accuracy'][-1] *100
 val_acc = history_no.history['val_accuracy'][-1] * 100
-
-print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
-print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
-print(f"Difference between Training and Validation Accuracy: {abs(train_acc - val_acc):.2f}%")
 
 if train_acc - val_acc >= 5:
     print("\nOverfitting is there in the model")
 else:
     print("\nNo Overfitting in the model")
 
-# Accuracy graph
 plt.figure()
 plt.plot(history_no.history['accuracy'], label="Train Acc (No Dropout)")
 plt.plot(history_no.history['val_accuracy'], label="Val Acc (No Dropout)")
@@ -52,7 +35,6 @@ plt.ylabel("Accuracy")
 plt.legend()
 plt.show()
 
-# Loss graph
 plt.figure()
 plt.plot(history_no.history['loss'], label="Train Loss (No Dropout)")
 plt.plot(history_no.history['val_loss'], label="Val Loss (No Dropout)")
@@ -62,9 +44,6 @@ plt.ylabel("Loss")
 plt.legend()
 plt.show()
 
-# -------------------------------
-# Model WITH Dropout
-# -------------------------------
 model_dropout = Sequential([
     Dense(64, activation='relu', input_shape=(2,)),
     Dropout(0.5),
@@ -73,27 +52,12 @@ model_dropout = Sequential([
     Dense(1, activation='sigmoid')
 ])
 
-model_dropout.compile(optimizer='adam',
-                      loss='binary_crossentropy',
-                      metrics=['accuracy'])
+model_dropout.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-history_do = model_dropout.fit(X_train, y_train,
-                               epochs=50,
-                               batch_size=32,
-                               validation_split=0.2)
+history_do = model_dropout.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.2)
 train_acc = history_do.history['accuracy'][-1] *100
 val_acc = history_do.history['val_accuracy'][-1] * 100
 
-print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
-print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
-print(f"Difference between Training and Validation Accuracy: {abs(train_acc - val_acc):.2f}%")
-
-if train_acc - val_acc >= 5:
-    print("\nOverfitting is there in the model")
-else:
-    print("\nNo Overfitting in the model")
-
-# Accuracy graph
 plt.figure()
 plt.plot(history_do.history['accuracy'], label="Train Acc (Dropout)")
 plt.plot(history_do.history['val_accuracy'], label="Val Acc (Dropout)")
@@ -103,7 +67,6 @@ plt.ylabel("Accuracy")
 plt.legend()
 plt.show()
 
-# Loss graph
 plt.figure()
 plt.plot(history_do.history['loss'], label="Train Loss (Dropout)")
 plt.plot(history_do.history['val_loss'], label="Val Loss (Dropout)")

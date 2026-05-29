@@ -26,16 +26,12 @@ for x in inputs:
     or_outputs.append(y)
     print(x, "->", y)
 
-# GRAPH FOR AND GATE
-plt.figure(figsize=(6,6))
-
 for i, point in enumerate(inputs):
     if and_outputs[i] == 0:
         plt.scatter(point[0], point[1], marker='o', s=200, label='Class 0' if i == 0 else "")
     else:
         plt.scatter(point[0], point[1], marker='x', s=200, label='Class 1')
 
-# Decision Boundary: x1 + x2 = 1.5
 x = np.linspace(-0.2, 1.2, 100)
 y = 1.5 - x
 plt.plot(x, y, label='Decision Boundary')
@@ -49,16 +45,12 @@ plt.grid(True)
 plt.legend()
 plt.show()
 
-
-plt.figure(figsize=(6,6))
-
 for i, point in enumerate(inputs):
     if or_outputs[i] == 0:
         plt.scatter(point[0], point[1], marker='o', s=200, label='Class 0')
     else:
         plt.scatter(point[0], point[1], marker='.', s=200, label='Class 1' if i == 1 else "")
 
-# Decision Boundary: x1 + x2 = 0.5
 x = np.linspace(-0.2, 1.2, 100)
 y = 0.5 - x
 plt.plot(x, y, label='Decision Boundary')

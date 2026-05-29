@@ -1,12 +1,15 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from tensorflow.keras.preprocessing import image
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam
 from keras import Sequential
 from keras.layers import Dense,Flatten,Conv2D,MaxPooling2D,Dropout
+
 !mkdir -p ~/.kaggle
 !cp kaggle.json ~/.kaggle/
 !kaggle datasets download -d salader/dogsvscats
+
 import zipfile
 zip_ref = zipfile.ZipFile('/content/dogsvscats.zip','r')
 zip_ref.extractall('/content')
@@ -15,6 +18,7 @@ zip_ref.close()
 train_ds = keras.utils.image_dataset_from_directory(
     directory='/content/train', labels='inferred', label_mode='int',
     batch_size=32, image_size=(224,224))
+
 test_ds = keras.utils.image_dataset_from_directory(
     directory='/content/test', labels='inferred', label_mode='int',
     batch_size=32, image_size=(224,224))
@@ -44,30 +48,8 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 model.summary()
 history = model.fit(train_ds, epochs=10, validation_data=test_ds, verbose=1)
-print("Last Epoch Training Accuracy:", history.history['accuracy'][-1])
-print("Last Epoch Validation Accuracy:", history.history['val_accuracy'][-1])
 
-import numpy as np
-from tensorflow.keras.preprocessing import image
-img = image.load_img('cat_or_dog.jpg', target_size=(224,224))
-img_array = image.img_to_array(img) / 255.0
-img_array = np.expand_dims(img_array, axis=0)
-prediction = model.predict(img_array)
-print("Dog 🐶" if prediction[0][0] > 0.5 else "Cat 🐱")
-
-import cv2
-import matplotlib.pyplot as plt
 test_img = cv2.imread('/content/test/dogs/dog.10006.jpg')
-plt.imshow(test_img)
-print("test image shape:", test_img.shape)
-test_img = cv2.resize(test_img, (224,224))
-test_input = test_img.reshape((1,224,224,3))
-p = model.predict(test_input)
-print("DOG" if p >= 0.5 else "CAT")
-
-test_img = cv2.imread('/content/test/cats/cat.10030.jpg')
-plt.imshow(test_img)
-print("test image shape:", test_img.shape)
 test_img = cv2.resize(test_img, (224,224))
 test_input = test_img.reshape((1,224,224,3))
 p = model.predict(test_input)

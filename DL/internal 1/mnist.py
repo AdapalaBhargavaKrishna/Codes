@@ -1,9 +1,7 @@
 import cv2
-import numpy as np
 from tensorflow import keras
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense,Flatten
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
@@ -13,15 +11,14 @@ plt.imshow(X_train[0])
 X_train = X_train/255
 X_test = X_test/255
 
-model = Sequential()
-model.add(Flatten(input_shape=(28,28)))
-model.add(Dense(128,activation='relu'))
-model.add(Dense(32,activation='relu'))
-model.add(Dense(10,activation='softmax'))
+model = Sequential([
+    Flatten(input_shape=(28,28)),
+    Dense(128, activation='relu'),
+    Dense(32, activation='relu'),
+    Dense(10, activation='softmax')
+])
 model.summary()
-
-model.compile(loss='sparse_categorical_crossentropy',optimizer='Adam',metrics=['accuracy'])
-
+model.compile(optimizer='Adam' , loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 history = model.fit(X_train,y_train,epochs=25,validation_split=0.2)
 
 y_prob = model.predict(X_test)

@@ -1,7 +1,3 @@
-# House Price Prediction using MLP
-
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
@@ -9,50 +5,26 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
-# Load dataset
 data = fetch_california_housing()
 X = data.data
 y = data.target
 
-plt.figure()
-plt.scatter(X[:,0], y)
-plt.title("Median Income vs House Price")
-plt.xlabel("Median Income")
-plt.ylabel("House Price")
-plt.show()
-
-# Train-Test Split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-# Feature Scaling
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# MLP Model
 model = Sequential([
     Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
     Dense(32, activation='relu'),
     Dense(1)
 ])
 
-# Compile Model
-model.compile(optimizer='adam',
-              loss='mse',
-              metrics=['mae','accuracy'])
-
-# Train Model
-history = model.fit(X_train, y_train,
-                    epochs=50,
-                    batch_size=32,
-                    validation_split=0.2)
-
-# Evaluate Model
+model.compile(optimizer='adam', loss='mse', metrics=['mae','accuracy'])
+history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.2)
 loss, mae, acc= model.evaluate(X_test, y_test)
-print("Test MAE:", mae)
-print("Test Accuracy:", acc)
 
-# Prediction
 predictions = model.predict(X_test[:5])
 print("Predicted Prices:", predictions)
 

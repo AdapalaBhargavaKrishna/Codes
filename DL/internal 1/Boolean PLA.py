@@ -1,148 +1,147 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def step(x):
     return 1 if x >= 0 else 0
 
-def perceptron(X, y, lr = 0.1, epochs=10):
+def perceptron(X, y, lr=0.1, epochs=10):
+
     w = np.zeros(2)
     b = 0
 
     for _ in range(epochs):
         for i in range(len(X)):
+
             z = np.dot(X[i], w) + b
-
             y_pred = step(z)
-
             error = y[i] - y_pred
-
-            w += lr * error * X[i] 
-
+            w += lr * error * X[i]
             b += lr * error
+ 
     return w, b
 
 def test(X, w, b):
+    outputs = []
+
     for x in X:
-        print(x, step(np.dot(x,w) + b))
+        y = step(np.dot(x, w) + b)
+        outputs.append(y)
+        print(x, "->", y)
 
-X = np.array([[0,0],[0,1],[1,0],[1,1]])
+    return outputs
 
-AND = np.array([0,0,0,1])
-OR = np.array([0,1,1,1])
-NOR = np.array([1,0,0,0])
-XOR = np.array([0,1,1,0])
+def plot_graph(X, outputs, w, b, title):
+    for i, point in enumerate(X):
+        if outputs[i] == 0:
+            plt.scatter(point[0], point[1], marker='o', s=200, color='blue', label='Class 0' if i == 0 else "")
+        else:
+            plt.scatter(point[0], point[1], marker='x', s=200, color='red', label='Class 1' if i == 1 else "")
 
+    x = np.linspace(-0.2, 1.2, 100)
+    y = -(w[0] * x + b) / w[1]
+    plt.plot(x, y, label='Decision Boundary')
+    plt.xlim(-0.2, 1.2)
+    plt.ylim(-0.2, 1.2)
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title(title)
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+X = np.array([
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+])
+
+AND  = np.array([0,0,0,1])
+OR   = np.array([0,1,1,1])
+NAND = np.array([1,1,1,0])
+NOR  = np.array([1,0,0,0])
 
 print("AND Gate")
-w,b = perceptron(X,AND)
-test(X,w,b)
+w_and, b_and = perceptron(X, AND)
+and_outputs = test(X, w_and, b_and)
+print("Weights:", w_and)
+print("Bias:", b_and)
+
+plot_graph(X, and_outputs, w_and, b_and,
+           "AND Gate Linear Separability")
 
 print("\nOR Gate")
-w,b = perceptron(X,OR)
-test(X,w,b)
+w_or, b_or = perceptron(X, OR)
+or_outputs = test(X, w_or, b_or)
+
+print("Weights:", w_or)
+print("Bias:", b_or)
+
+plot_graph(X, or_outputs, w_or, b_or,
+           "OR Gate Linear Separability")
+
+print("\nNAND Gate")
+w_nand, b_nand = perceptron(X, NAND)
+nand_outputs = test(X, w_nand, b_nand)
+
+print("Weights:", w_nand)
+print("Bias:", b_nand)
+
+plot_graph(X, nand_outputs, w_nand, b_nand,
+           "NAND Gate Linear Separability")
 
 print("\nNOR Gate")
-w,b = perceptron(X,NOR)
-test(X,w,b)
+w_nor, b_nor = perceptron(X, NOR)
+nor_outputs = test(X, w_nor, b_nor)
 
-print("\nXOR Gate")
-w,b = perceptron(X,XOR)
-test(X,w,b)
+print("Weights:", w_nor)
+print("Bias:", b_nor)
+
+plot_graph(X, nor_outputs, w_nor, b_nor,
+           "NOR Gate Linear Separability")
+
 
 """
-====================================================================================================
-EXPERIMENT IDENTIFICATION: This is Experiment 2 - Perceptron Learning Algorithm for Boolean functions
-====================================================================================================
+========================================================
+PERCEPTRON ARCHITECTURE
+========================================================
 
-ARCHITECTURE DETAILS:
---------------------
-Input Layer: 2 neurons (x1, x2)
-Hidden Layer: None (single layer)
-Output Layer: 1 neuron with step activation
+Input Layer (2)      Output Layer (1)
 
-WEIGHTS AND BIASES:
-------------------
-Initially: w = [0, 0], b = 0 (all zeros)
-After training: They are LEARNED, not manually set!
-
-LEARNING PROCESS:
-----------------
-For each epoch (10 times):
-    For each training example (0,0), (0,1), (1,0), (1,1):
-        1. Calculate: z = (x1*w1 + x2*w2) + b
-        2. Predict: y_pred = step(z)
-        3. Calculate error = actual - predicted
-        4. Update weights: w += lr * error * x
-        5. Update bias: b += lr * error
-
-LEARNING RATE (lr = 0.1):
-------------------------
-Controls how much weights change per update
-- Too high: May overshoot solution
-- Too low: Learns slowly
-
-WHAT HAPPENS FOR EACH GATE:
---------------------------
-
-1. AND GATE:
-   Target: [0,0,0,1]
-   After learning: w ≈ [0.2, 0.2], b ≈ -0.3
-   Why: Both inputs need to be 1 to fire
-
-2. OR GATE:
-   Target: [0,1,1,1]
-   After learning: w ≈ [0.2, 0.2], b ≈ -0.1
-   Why: Either input being 1 can fire
-
-3. NOR GATE:
-   Target: [1,0,0,0]
-   After learning: w ≈ [-0.2, -0.2], b ≈ 0.1
-   Why: Needs negative weights to implement NOT OR
-
-4. XOR GATE:
-   Target: [0,1,1,0]
-   After learning: Will FAIL!
-   Why: XOR is NOT linearly separable
-
-THE XOR PROBLEM (Important for exam):
-------------------------------------
-XOR truth table:
-0,0 → 0
-0,1 → 1
-1,0 → 1
-1,1 → 0
-
-Can you draw a single straight line to separate:
-- Output 0: (0,0) and (1,1)
-- Output 1: (0,1) and (1,0)
-
-IMPOSSIBLE! That's why perceptron FAILS for XOR
-This is why we need MLP (Experiment 3)!
-
-PARAMETERS SUMMARY:
-------------------
-Each gate: 2 weights + 1 bias = 3 parameters (learned)
-
-ARCHITECTURE VISUALIZATION:
---------------------------
-Input Layer (2)    Output Layer (1)
    [x1] -----\
-              \
-   [x2] -------[Neuron] --> Output (0 or 1)
-              /
-         [Bias]
-      (learned)
+               \
+   [x2] -------[Neuron] --> Output
+               /
+          [Bias]
 
-KEY POINTS FOR EXAM:
--------------------
-1. This demonstrates SUPERVISED LEARNING (inputs with labels)
-2. Perceptron Convergence Theorem: Algorithm will find solution IF data is linearly separable
-3. XOR proves limitation of single-layer perceptrons
-4. Learning happens through ERROR-CORRECTION rule
-5. Weights and biases are INITIALIZED to zero, then UPDATED during training
+========================================================
+WEIGHTED SUM FUNCTION
+========================================================
 
-WHAT THE CODE OUTPUTS:
----------------------
-- AND, OR, NOR: Will work correctly after learning
-- XOR: Will give wrong answers (probably 50% accuracy)
-      Example output might be: [0,0,0,0] or [0,1,1,1] - never correct!
+z = (x1*w1 + x2*w2) + b
+
+========================================================
+ACTIVATION FUNCTION
+========================================================
+
+step(z) = 1 if z >= 0
+          0 otherwise
+
+========================================================
+TRAINABLE PARAMETERS
+========================================================
+
+Weights = 2
+Bias    = 1
+
+Total Trainable Parameters = 3
+
+========================================================
+LEARNING RULE
+========================================================
+
+w = w + lr * error * x
+b = b + lr * error
+
+========================================================
 """

@@ -1,22 +1,12 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_moons
-import seaborn as sns
 from mlxtend.plotting import plot_decision_regions
 import tensorflow
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
 X , y = make_moons(100 , noise = 0.25, random_state=42)
-
-plt.scatter(X[y==0,0], X[y == 0,1], label='Class 0')
-plt.scatter(X[y==1,0], X[y == 1,1], label='Class 1')
-plt.xlabel("Feature 1")
-plt.ylabel("Feature 2")
-plt.title("Scatter Plot with Legend")
-plt.legend()
-plt.show()
 
 model1 = Sequential()
 model1.add(Dense(128, input_dim = 2, activation='relu'))
@@ -24,7 +14,7 @@ model1.add(Dense(128, activation='relu'))
 model1.add(Dense(1, activation='sigmoid'))
 model1.summary()
 
-model1.compile(loss = 'binary_crossentropy', optimizer=Adam(learning_rate=0.01), metrics=['accuracy'])
+model1.compile(optimizer=Adam(learning_rate=0.01), loss = 'binary_crossentropy', metrics=['accuracy'])
 history1 = model1.fit(X , y , epochs = 200 , validation_split = 0.2, verbose = 1)
 
 train_acc = history1.history['accuracy'][-1] * 100
@@ -35,12 +25,10 @@ if train_acc - val_acc >= 5:
 else:
     print("\nNo Overfitting in the model")
 
-plot_decision_regions(X, y.astype('int'), clf=model1, legend=2, 
-                      X_highlight=None)
+plot_decision_regions(X, y.astype('int'), clf=model1, legend=2)
 plt.xlim(-2,3)
 plt.ylim(-1.5,2)
 plt.show()
-
 
 plt.plot(history1.history['accuracy'], label='Training Accuracy')
 plt.plot(history1.history['val_accuracy'], label='Validation Accuracy')
@@ -63,14 +51,6 @@ history2 = model2.fit(X, y, epochs = 200 , validation_split = 0.2 , verbose = 1)
 train_acc = history2.history['accuracy'][-1] *100
 val_acc = history2.history['val_accuracy'][-1] * 100
 
-print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
-print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
-
-if train_acc - val_acc >= 5:
-    print("\nOverfitting is there in the model")
-else:
-    print("\nNo Overfitting in the model")
-
 plot_decision_regions(X, y.astype('int'), clf=model2, legend=2)
 plt.xlim(-2,3)
 plt.ylim(-1.5,2)
@@ -78,7 +58,6 @@ plt.show()
 
 plt.plot(history2.history['accuracy'], label='Training Accuracy')
 plt.plot(history2.history['val_accuracy'], label='Validation Accuracy')
-
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.title('Training vs Validation Accuracy')

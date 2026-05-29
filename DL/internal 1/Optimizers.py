@@ -1,4 +1,3 @@
-import tensorflow as tf
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense , Flatten
@@ -31,54 +30,30 @@ def create_model():
         Dense(10, activation='softmax', kernel_initializer='glorot_uniform')
     ])
 
-# Function to run experiment with different optimizers
 def run_experiment(name, optimizer, batch_size):
-    # Create a fresh model for each experiment
     model = create_model()
-    
-    # Compile the model with:
-    # - optimizer (varies per experiment)
-    # - loss function (for multi-class classification)
-    # - metrics to track
-    model.compile(
-        optimizer=optimizer,
-        loss = 'sparse_categorical_crossentropy',  # Good for integer labels (0,1,2...)
-        metrics = ['accuracy']
-    )
 
-    # Record start time to measure training duration
+    # Good for integer labels (0,1,2...)
+    model.compile(optimizer=optimizer, loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
+    
     start = time.time()
-    
-    # Train the model
-    history = model.fit(
-        X_train , y_train,     # Training data and labels
-        epochs=5,               # Number of times to loop through entire dataset
-        batch_size=batch_size,  # Number of samples per gradient update
-        verbose=0               # 0 = silent, don't print progress bars
-    )
-    
-    # Record end time
+    history = model.fit(X_train , y_train,epochs=5, batch_size=batch_size, verbose=0)
     end = time.time()
 
-    # Get final accuracy and loss from training history
-    train_acc = history.history['accuracy'][-1]  # Last epoch's accuracy
-    train_loss = history.history['loss'][-1]      # Last epoch's loss
+    train_acc = history.history['accuracy'][-1]
+    train_loss = history.history['loss'][-1]
 
     # Print results for this optimizer
     print(f'{name}')
     print(f'Time: {end - start:.2f}s')
     print(f'Accuracy: {train_acc*100:.2f}%')
     print(f'Loss: {train_loss:.4f}')
-    print('---')
 
-    # Return loss history and name for plotting
     return history.history['loss'], name
 
-# List to store results from all experiments
 results = []
 
 # Experiment 1: Batch Gradient Descent
-# batch_size = all training data (60,000 samples)
 # Updates weights once after seeing ALL images
 results.append(run_experiment("Batch GD",
                              SGD(learning_rate=0.01),
@@ -117,20 +92,15 @@ results.append(run_experiment("Stochastic GD",
                              SGD(learning_rate=0.01),
                              batch_size=1))
 
-# Plotting results to compare optimizer performance
-plt.figure(figsize=(8,5))
-
-# Plot loss curves for each optimizer
 for loss, name in results:
     plt.plot(loss, label=name)
 
-# Add labels and title
 plt.xlabel("Epochs")
 plt.ylabel("Loss")
 plt.title("Training Loss Comparison Across Optimizers")
-plt.legend()  # Show legend with optimizer names
-plt.grid()    # Add grid for better readability
-plt.show()    # Display the plot
+plt.legend()
+plt.grid()
+plt.show()
 
 """
 ====================================================================================================
