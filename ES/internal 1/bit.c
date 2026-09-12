@@ -1,7 +1,7 @@
 // port 0 to port 13
 #include <reg51.h>
 
-sbit = led = p0^0;
+sbit led = p0^0;
 
 void delay_ms(unsigned int);
 void main(void)
@@ -10,8 +10,8 @@ void main(void)
     {
         led = 0;
         delay_ms(500);
-        led = 1;
-        delay+ms(500);
+        led = 1; 
+        delay_ms(500);
     }
 }
 

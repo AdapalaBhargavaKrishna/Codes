@@ -2,7 +2,7 @@
 // port 2 to port 14
 #include <reg51.h>
 
-#define led P0;
+#define led P0
 sbit sw = P2^0;
 
 void delay_ms(unsigned int i);
@@ -14,6 +14,7 @@ void main(void)
     {
         if (sw == 0)
         {
+            led = 0x00;
             for (i = 0; i < 4; i++)
             {
                 led |= (1 << i);
